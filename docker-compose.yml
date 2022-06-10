@@ -2,6 +2,7 @@ version: '3'
 services:
   db:
     image: postgres:14
+    restart: always
     env_file:
       - .env
     ports:
@@ -11,6 +12,7 @@ services:
 
   webapp:
     build: .
+    restart: always
     env_file:
       - .env
     ports:

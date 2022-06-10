@@ -4,6 +4,10 @@ export
 db.run:
 	@docker-compose up -d db
 
+parse.run:
+	@docker-compose build
+	@docker-compose up -d
+
 stop:
 	@docker-compose stop -t 1
 
@@ -13,9 +17,6 @@ clean:
 lint:
 	@mypy backend
 	@flake8 backend
-
-dev.install:
-	@poetry install
 
 db.create:
 	@python -m backend.models
