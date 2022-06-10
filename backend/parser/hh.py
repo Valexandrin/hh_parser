@@ -1,13 +1,13 @@
+import time
 import requests
 import json
 from backend.models import Vacancy
 from backend.db import db_session
 
 
-def get_vacancies(page=1, date=None):
+def get_vacancies(page=1):
     params = {
             'text': 'NAME:Python (разработчик OR developer OR программист) NOT (full-stack OR fullstack OR middle OR senior), удаленная работа',
-            'date_from': date,
             'page': page, # Индекс страницы поиска на HH
             'per_page': 100 # Кол-во вакансий на 1 странице
         }
@@ -42,15 +42,35 @@ def save_vacancy(vacancy):
     db_session.commit()
 
 
-last_update = Vacancy.query.order_by(Vacancy.published_at.desc()).first()
-if last_update:
-    last_update = last_update.published_at
+def db_update():
+    id_list = []
+    pages = get_vacancies()['pages']
+    for page in range(pages):
+        vacancies = get_vacancies(page)['items']
 
-pages = get_vacancies(date=last_update)['pages']
-for page in range(pages):
-    vacancies = get_vacancies(page, last_update)['items']
+        for vacancy in vacancies:
+            exist_vacancy = Vacancy.query.filter(Vacancy.uid==vacancy['id']).count()
+            if not exist_vacancy:
+                save_vacancy(vacancy)
 
-    for vacancy in vacancies:
-        exist_vacancy = Vacancy.query.filter(Vacancy.uid==vacancy['id']).count()
-        if not exist_vacancy:
-            save_vacancy(vacancy)
+            id_list.append(int(vacancy['id']))
+
+    db_clean(id_list)
+
+
+def db_clean(actual_ids: list):
+    exist_vacancies = Vacancy.query.all()
+    for vacancy in exist_vacancies:
+        if vacancy.uid not in actual_ids:
+            db_session.delete(vacancy)
+            db_session.commit()
+
+
+def main():
+    while True:
+        db_update()
+        time.sleep(3600)
+
+
+if __name__ == '__main__':
+    main()
