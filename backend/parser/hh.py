@@ -13,23 +13,35 @@ def get_vacancies(page=1):
         }
 
     response = requests.get('https://api.hh.ru/vacancies', params)
-    data = response.content.decode()
-    data = json.loads(data)
 
-    return data
+    return data_processing(response)
+
+
+def get_description(vacancy_id):
+    response = requests.get('https://api.hh.ru/vacancies/{v_id}'.format(v_id = vacancy_id))
+
+    vacancy = data_processing(response)
+    return vacancy['description']
+
+
+def data_processing(input_data):
+    data = input_data.content.decode()
+    return json.loads(data)
 
 
 def save_vacancy(vacancy):
     new_vacancy = Vacancy(
                 uid = vacancy['id'],
-                name = vacancy['name'],
                 area = vacancy['area']['name'],
-                published_at = vacancy['published_at'],
-                url = vacancy['alternate_url'],
+                description = vacancy['description'],
                 employer = vacancy['employer']['name'],
+                name = vacancy['name'],
+                published_at = vacancy['published_at'],
                 requirement = vacancy['snippet']['requirement'],
                 responsibility = vacancy['snippet']['responsibility'],
                 schedule = vacancy['schedule']['name'],
+                status = 'new',
+                url = vacancy['alternate_url'],
             )
 
     if vacancy['salary']:
@@ -47,10 +59,11 @@ def db_update():
     pages = get_vacancies()['pages']
     for page in range(pages):
         vacancies = get_vacancies(page)['items']
-
         for vacancy in vacancies:
             exist_vacancy = Vacancy.query.filter(Vacancy.uid==vacancy['id']).count()
             if not exist_vacancy:
+                vacancy['description'] = get_description(vacancy['id'])
+
                 save_vacancy(vacancy)
 
             id_list.append(int(vacancy['id']))
