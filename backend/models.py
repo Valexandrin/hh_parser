@@ -7,16 +7,18 @@ class Vacancy(Base):
     __tablename__ = 'vacancies'
 
     uid = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
     area = Column(String, nullable=False)
-    salary_from = Column(String)
-    salary_to = Column(String)
-    published_at = Column(Date, nullable=False)
-    url = Column(String)
+    description = Column(String)
     employer = Column(String)
+    name = Column(String, nullable=False)
+    published_at = Column(Date, nullable=False)
     requirement = Column(String)
     responsibility = Column(String)
+    salary_from = Column(String)
+    salary_to = Column(String)
     schedule = Column(String)
+    status = Column(String, nullable=False, default='new')
+    url = Column(String)
 
 
 def main():
