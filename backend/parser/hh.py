@@ -79,11 +79,11 @@ def db_clean(actual_ids: list):
             db_session.commit()
 
 
-def main():
+def run_parser():
     while True:
         db_update()
-        time.sleep(3600)
+        time.sleep(10)
 
 
 if __name__ == '__main__':
-    main()
+    run_parser()
