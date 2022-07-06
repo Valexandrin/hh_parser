@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, TIMESTAMP
 
 from backend.db import Base, engine
 
@@ -11,7 +11,7 @@ class Vacancy(Base):
     description = Column(String)
     employer = Column(String)
     name = Column(String, nullable=False)
-    published_at = Column(Date, nullable=False)
+    published_at = Column(TIMESTAMP, nullable=False)
     requirement = Column(String)
     responsibility = Column(String)
     salary_from = Column(String)
