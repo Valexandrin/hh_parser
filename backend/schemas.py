@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import datetime, date
+from datetime import datetime
 
 
 class Schema(BaseModel):
@@ -14,11 +14,21 @@ class Vacancy(Schema):
     description: str
     employer: str
     name: str
-    published_at: date
-    requirement: str = None
-    responsibility: str = None
+    published_at: datetime
     salary_from: str = None
     salary_to: str = None
     schedule: str
     status: str
     url: str
+
+
+class VacancyShort(Schema):
+    uid: int
+    area: str
+    employer: str
+    name: str
+    published_at: datetime
+    requirement: str = None
+    responsibility: str = None
+    schedule: str
+    status: str

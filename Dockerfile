@@ -10,7 +10,5 @@ COPY poetry.lock pyproject.toml /webapp/
 RUN poetry install --no-dev
 
 COPY backend /webapp/backend
-COPY migrations /webapp/migrations
 
 CMD ["python", "-m", "backend"]
-CMD ["python", "-m", "backend.parser.hh"]
