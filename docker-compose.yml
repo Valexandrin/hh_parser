@@ -21,12 +21,20 @@ services:
       - hh-parser
 
   frontend:
-    build: C:\Users\alex-\projects\hh_parser-frontend
+    build: ..\hh_parser-frontend
     restart: always
     env_file:
       - .env
     ports:
       - 5000:5000
+    networks:
+      - hh-parser
+
+  worker:
+    build: ..\hh_parser-worker
+    restart: always
+    env_file:
+      - .env
     networks:
       - hh-parser
 
