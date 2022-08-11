@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 import orjson
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response
 
 from backend import schemas
 from backend.repo.vacancies import VacancyRepo
@@ -18,7 +18,10 @@ def get_all(status: str=''):
 
     vacancies = [schemas.VacancyShort.from_orm(entity).dict() for entity in entities]
 
-    return orjson.dumps(vacancies), HTTPStatus.OK
+    response = make_response(orjson.dumps(vacancies))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response, HTTPStatus.OK
 
 
 @view.get('/<int:uid>')
@@ -26,9 +29,11 @@ def get_by_id(uid):
     entity = vacancy_repo.get_by_id(uid)
 
     vacancy = schemas.Vacancy.from_orm(entity)
-    res = vacancy.dict()
 
-    return orjson.dumps(res), HTTPStatus.OK
+    response = make_response(orjson.dumps(vacancy.dict()))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response, HTTPStatus.OK
 
 
 @view.put('/<int:uid>')
@@ -37,10 +42,12 @@ def update_vacancy(uid):
     status = payload['status']
 
     entity = vacancy_repo.update(uid, status)
-    new_vacancy = schemas.Vacancy.from_orm(entity)
-    res = new_vacancy.dict()
+    new_vacancy = schemas.Vacancy.from_orm(entity).dict()
 
-    return orjson.dumps(res), HTTPStatus.OK
+    response = make_response(orjson.dumps(new_vacancy))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response, HTTPStatus.OK
 
 
 @view.post('/')
@@ -66,7 +73,10 @@ def add_vacancy():
 
     new_vacancy = schemas.Vacancy.from_orm(entity).dict()
 
-    return orjson.dumps(new_vacancy), HTTPStatus.CREATED
+    response = make_response(orjson.dumps(new_vacancy))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response, HTTPStatus.CREATED
 
 
 @view.delete('/<uid>')
