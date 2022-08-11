@@ -1,6 +1,5 @@
 from backend.app import create_app
 from backend.config import config
-from .parser.hh import run_parser
 
 
 def main():
@@ -13,4 +12,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    run_parser()
