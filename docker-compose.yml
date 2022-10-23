@@ -9,6 +9,8 @@ services:
       - 5432:5432
     networks:
       - hh-parser
+    volumes:
+      - ./hh_data:/var/lib/postgresql/data
 
   backend:
     build: .
@@ -40,3 +42,6 @@ services:
 
 networks:
   hh-parser:
+
+volumes:
+  hh_data:
